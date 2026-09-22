@@ -8,7 +8,7 @@
 #SBATCH --gpus-per-node=8
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=60G
-#SBATCH --time=04:00:00
+#SBATCH --time=06:00:00
 
 set -eo pipefail
 

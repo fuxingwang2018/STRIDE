@@ -23,7 +23,7 @@ data:
     output_shape: [92, 68]
 
   conditioning:
-    dynamic_variables: [prcp, temp]
+    dynamic_variables: [prcp, zg1000]
     static_variables: [topo]
     input_shape: [23, 17]
 
