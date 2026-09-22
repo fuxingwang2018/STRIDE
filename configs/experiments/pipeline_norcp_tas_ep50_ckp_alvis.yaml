@@ -1,5 +1,5 @@
 experiment:
-  name: pipeline_norcp
+  name: pipeline_norcp_tas_ep50_ckp
   output_root: ${STRIDE_RUNS}
   seed: 42
 
@@ -9,17 +9,16 @@ stages:
   evaluation: true
 
 bases:
-  model: configs/models/edm_model_base.yaml
+  model: configs/models/edm_model_base_tas.yaml
   training: configs/training/training_base.yaml
   generation: configs/generation/generation_base.yaml
   sampler: configs/generation/sampler_base.yaml
   evaluation: configs/evaluation/evaluation_base.yaml
-  data: configs/datasets/norcp_alvis.yaml
+  data: configs/datasets/norcp_tas_alvis.yaml
 
 data:
   target:
-    variable: prcp
-    transform: log1p
+    variable: temp
     output_shape: [92, 68]
 
   conditioning:
@@ -53,7 +52,7 @@ training:
   run_name: train_norcp
   overrides:
     loop:
-      max_epochs: 5
+      max_epochs: 100
   
 model:
   overrides:
@@ -79,7 +78,7 @@ model:
         enabled: false
         loss_weight: 0.1
         wet_threshold_mm: 0.1
-        target_variable: "prcp"
+        target_variable: "temp"
         use_loss_reweighting: false
         reweight_detach: true
         reweight_power: 1.0

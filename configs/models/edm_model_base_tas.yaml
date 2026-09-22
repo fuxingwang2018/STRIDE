@@ -1,0 +1,47 @@
+model:
+  name: edm_unet
+
+  spatial:
+    align_cond_to_target: true
+    cond_upsample_mode: bilinear
+
+  unet:
+    model_channels: 64
+    channel_mults: [1, 2, 4, 4]
+    num_res_blocks: 2
+    dropout: 0.0
+
+  attention:
+    use_attention: true
+    attention_resolutions: [16]
+    num_heads: 4
+
+  embeddings:
+    sigma_embed_dim: 256
+    film_embed_dim: 128
+    use_doy_film: true
+    use_variable_film: false
+
+  context:
+    use_context_encoder: false
+    context_in_channels: 0
+    context_embed_dim: 128
+
+  rain_gate:
+    model:
+      enabled: false
+      hidden_channels: 16
+      num_blocks: 3
+      input_mode: "cond"  # "cond" or "predcond"
+    loss:
+      enabled: false
+      loss_weight: 0.02
+      wet_threshold_mm: 0.1
+      target_variable: "temp"
+      use_loss_reweighting: false
+      reweight_detach: true
+      reweight_power: 1.0
+
+  temporal:
+    use_temporal_stack: false
+    temporal_steps: 1

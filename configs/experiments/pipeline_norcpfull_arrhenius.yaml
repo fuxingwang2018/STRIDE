@@ -1,5 +1,5 @@
 experiment:
-  name: pipeline_norcp
+  name: pipeline_norcpfull_arrhenius
   output_root: ${STRIDE_RUNS}
   seed: 42
 
@@ -14,22 +14,22 @@ bases:
   generation: configs/generation/generation_base.yaml
   sampler: configs/generation/sampler_base.yaml
   evaluation: configs/evaluation/evaluation_base.yaml
-  data: configs/datasets/norcp_alvis.yaml
+  data: configs/datasets/norcpfull_arrhenius.yaml
 
 data:
   target:
     variable: prcp
     transform: log1p
-    output_shape: [92, 68]
+    output_shape: [836, 620]
 
   conditioning:
     dynamic_variables: [prcp, temp]
     static_variables: [topo]
-    input_shape: [23, 17]
+    input_shape: [209, 155]
 
   domain:
-    hr_size: [92, 68]
-    lr_size: [23, 17]
+    hr_size: [836, 620]
+    lr_size: [209, 155]
     large_domain: false
 
   split:
@@ -62,10 +62,10 @@ model:
     out_channels: 1
 
     spatial:
-      target_height: 92
-      target_width: 68
-      cond_height: 23
-      cond_width: 17
+      target_height: 836
+      target_width: 620
+      cond_height: 209
+      cond_width: 155
       align_cond_to_target: true
       cond_upsample_mode: bilinear
 

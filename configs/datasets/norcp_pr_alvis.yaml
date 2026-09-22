@@ -1,0 +1,107 @@
+data:
+  root_dir: /mimer/NOBACKUP/groups/naiss2025-6-138/HCLIMAI/NorCP_SSE/cropped # /Users/au728490/Data/NorCP/cropped
+  scenario_name: ECMWF-ERAINT
+  temporal_tag: 6hr
+  target_spatial_tag: 3km
+  dynamic_spatial_tag: 12km
+
+  split:
+    manifest_path: data_adapters/norcp/saved/splits/temporal__ECMWF-ERAINT__train_auto_auto__val_2010-01-01T00-00-00_2012-12-31T18-00-00__test_2013-01-01T00-00-00_2018-12-31T18-00-00.json
+    name: train
+    stats_tag: temporal__ECMWF-ERAINT__train_auto_auto__val_2010-01-01T00-00-00_2012-12-31T18-00-00__test_2013-01-01T00-00-00_2018-12-31T18-00-00
+
+  domain:
+    tag: full_domain
+    crop: null
+    spatial_shuffle:
+      enabled: false
+      train_only: true
+      cutout_domain: null
+
+  target:
+    variable: prcp
+    source: NORCP_HR
+    time_offsets:
+      prcp: -3.0
+
+  conditioning:
+    dynamic:
+      source: NORCP_LR
+      variables:
+        [
+          prcp,
+          temp,
+          hus500,
+          ta500,
+          ua500,
+          va500,
+          zg500,
+          hus700,
+          ta700,
+          ua700,
+          va700,
+          zg700,
+          hus850,
+          ta850,
+          ua850,
+          va850,
+          zg850,
+          hus950,
+          ta950,
+          ua950,
+          va950,
+          zg950,
+          hus1000,
+          ta1000,
+          ua1000,
+          va1000,
+          zg1000,
+        ]
+      time_offsets:
+        prcp: -3.0
+      upsample_to_target: false
+      upsample_mode: bilinear
+
+    static:
+      source: NORCP_STATIC
+      variables: [topo]
+      allow_missing: true
+
+  transforms:
+    apply: true
+
+    target:
+      prcp: zscore
+
+    conditioning:
+      dynamic:
+        prcp: zscore
+        temp: zscore
+        hus500: zscore
+        ta500: zscore
+        ua500: zscore
+        va500: zscore
+        zg500: zscore
+        hus700: zscore
+        ta700: zscore
+        ua700: zscore
+        va700: zscore
+        zg700: zscore
+        hus850: zscore
+        ta850: zscore
+        ua850: zscore
+        va850: zscore
+        zg850: zscore
+        hus950: zscore
+        ta950: zscore
+        ua950: zscore
+        va950: zscore
+        zg950: zscore
+        hus1000: zscore
+        ta1000: zscore
+        ua1000: zscore
+        va1000: zscore
+        zg1000: zscore
+
+      static:
+        topo: zscore

@@ -1,5 +1,5 @@
 experiment:
-  name: pipeline_norcp
+  name: pipeline_norcp_arrhenius
   output_root: ${STRIDE_RUNS}
   seed: 42
 
@@ -14,7 +14,7 @@ bases:
   generation: configs/generation/generation_base.yaml
   sampler: configs/generation/sampler_base.yaml
   evaluation: configs/evaluation/evaluation_base.yaml
-  data: configs/datasets/norcp_alvis.yaml
+  data: configs/datasets/norcp_arrhenius.yaml
 
 data:
   target:

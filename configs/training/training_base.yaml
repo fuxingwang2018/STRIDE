@@ -16,7 +16,7 @@ training:
     accelerator: "auto"
 
   loop:
-    max_epochs: 500
+    max_epochs: 15    
     max_train_batches: null
     max_val_batches: null
     validate_every_n_epochs: 1
@@ -41,9 +41,9 @@ training:
 
   checkpointing:
     enabled: true
-    save_every_n_epochs: 10
+    save_every_n_epochs: 5
     save_best: true
-    resume_from: null
+    resume_from: null #'/mimer/NOBACKUP/groups/naiss2025-6-138/HCLIMAI/STRIDE_RUNS/pipeline_norcp_pr_zscore_ep150/training/checkpoints/checkpoint_epoch_0120.pt'
 
   validation:
     enabled: true
@@ -63,14 +63,14 @@ training:
     every_n_epochs: 5
     on_improved_val: true
     min_epoch: 3
-    fixed_val_indices: [0]
+    fixed_val_indices: [0,1]
     save_arrays: true
     save_plots: true
     output_subdir: "training_generation_preview"
 
   monitoring:
     enabled: true
-    compute_every_n_epochs: 1
+    compute_every_n_epochs: 5
     save_history_plots: true
     output_subdir: "monitoring"
     wet_threshold: 0.1

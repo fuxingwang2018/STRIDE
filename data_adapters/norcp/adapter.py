@@ -110,7 +110,8 @@ def build_doy_sincos(
 def build_date_metadata(timestamp_str: str) -> dict[str, Any]:
     dt = parse_iso_timestamp(timestamp_str)
     return {
-        "date": dt.strftime("%Y%m%d"),
+        #"date": dt.strftime("%Y%m%d"),
+        "date": dt.strftime("%Y%m%d%H"),
         "day_of_year": int(dt.timetuple().tm_yday),
         "doy_sin_cos": build_doy_sincos(timestamp_str).tolist(),
     }
@@ -171,6 +172,12 @@ class NorCPDataset(Dataset):
             for timestamp in get_split_timestamps(self.split_manifest, self.split_name)
         ]
 
+        #print('NorCPDataset: self.root_dir:', self.root_dir)
+        #print('NorCPDataset: self.scenario_name:', self.scenario_name)
+        #print('NorCPDataset: self.target_variables:', self.target_variables)
+        #print('NorCPDataset: self.dynamic_variables:', self.dynamic_variables)
+        #print('NorCPDataset: self.temporal_tag:', self.temporal_tag)
+        #print('NorCPDataset: self.target_time_offsets:', self.target_time_offsets)
         self.sample_index = build_norcp_sample_index(
             root_dir=self.root_dir,
             scenario_name=self.scenario_name,
@@ -182,6 +189,9 @@ class NorCPDataset(Dataset):
             target_time_offsets=self.target_time_offsets,
             dynamic_time_offsets=self.dynamic_time_offsets,
         )
+        #print('NorCPDataset: get_split_timestamps(self.split_manifest, self.split_name)', get_split_timestamps(self.split_manifest, self.split_name))
+        #print('NorCPDataset: self.sample_index', self.sample_index)
+        #print('NorCPDataset: sample_entry_get(sample, "timestamp")', sample_entry_get(sample, "timestamp"))
         self._sample_lookup = {
             normalize_timestamp_key(sample_entry_get(sample, "timestamp")): sample
             for sample in self.sample_index
@@ -387,6 +397,8 @@ class NorCPDataset(Dataset):
 
     def _validate_timestamps_exist(self) -> None:
         missing = [timestamp for timestamp in self.timestamps if timestamp not in self._sample_lookup]
+        #print('_validate_timestamps_exist: self.timestamps:', self.timestamps[:10])
+        #print('_validate_timestamps_exist: self._sample_lookup:', self._sample_lookup)
         if missing:
             raise ValueError(
                 f"Some split timestamps are missing from the NorCP sample index: {missing[:10]}"
@@ -692,6 +704,7 @@ class NorCPAdapter:
         datasets: dict[str, NorCPDataset] = {}
         for split_name in split_names:
             split_cfg = self._clone_cfg_with_split(split_name)
+            #print('NorCPAdapter: split_cfg', split_cfg)
             datasets[split_name] = NorCPDataset(split_cfg)
         return datasets
 

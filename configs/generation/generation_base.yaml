@@ -27,7 +27,7 @@ generation:
     storage_mode: "per_member_bundle" # later: "ensemble_bundle", "per_case"
 
   limits:
-    max_cases: 3         # small smoke-test limit
+    max_cases: 120 #null         # small smoke-test limit
 
   device:
     accelerator: "auto" # auto | cpu | cuda

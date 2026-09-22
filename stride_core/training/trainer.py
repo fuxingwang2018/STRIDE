@@ -252,6 +252,7 @@ class Trainer:
 
         self._set_seed(self.cfg.seed)
 
+        print('Trainer: self.cfg.training_config_path:', self.cfg.training_config_path)
         self.data: BuiltTrainingData = build_training_data(self.cfg.training_config_path)
 
         self.model_spec = ModelSpec.from_yaml(self.cfg.model_config_path)
@@ -393,6 +394,8 @@ class Trainer:
         self.model.train()
 
         total_loss = 0.0
+        #total_loss_tensor = 0.0
+        total_loss = torch.zeros(1, device=self.device)
         num_batches = 0
 
         for batch_idx, batch in enumerate(self.data.train_loader):
@@ -437,9 +440,16 @@ class Trainer:
                 self.ema.update(self.model)
 
             loss_value = float(loss.item())
-            total_loss += loss_value
+            total_loss += loss.detach()  # GPU accumulation, no sync
+            #total_loss += loss_value
             num_batches += 1
             self.global_step += 1
+            #with torch.no_grad():
+            #    total_loss_tensor += loss.detach()
+
+            # At end of epoch:
+            #avg_loss = float(total_loss_tensor.item()) / num_batches
+
 
             should_print_step = (
                 self.cfg.print_step_progress
@@ -461,7 +471,9 @@ class Trainer:
             raise RuntimeError("No training batches were processed")
 
         return {
-            "loss": total_loss / num_batches,
+            #"loss": total_loss / num_batches,
+            #"loss": avg_loss,
+            "loss": (total_loss / num_batches).item(),  # single GPU→CPU sync per epoch
             "num_batches": float(num_batches),
         }
 

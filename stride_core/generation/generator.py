@@ -379,13 +379,35 @@ class Generator:
         self._save_run_metadata()
 
         generated_case_count = 0
+        #print('run: self.loader=', self.loader)
+        loader = self.loader
+        ds = loader.dataset
+
+        """
+        print("=== DataLoader ===")
+        print(f"  batch_size:         {loader.batch_size}")
+        print(f"  num_workers:        {loader.num_workers}")
+        print(f"  pin_memory:         {loader.pin_memory}")
+        print(f"  drop_last:          {loader.drop_last}")
+        print(f"  shuffle:            {isinstance(loader.sampler, torch.utils.data.RandomSampler)}")
+        print(f"  persistent_workers: {loader.persistent_workers}")
+        print(f"  prefetch_factor:    {loader.prefetch_factor if loader.num_workers > 0 else 'N/A'}")
+        print(f"  collate_fn:         {loader.collate_fn}")
+
+        print("\n=== Dataset ===")
+        print(f"  type:               {type(ds).__name__}")
+        print(f"  len:                {len(ds)}")
+        print(f"dataset: len={len(ds)}, sample_keys={list(ds[0].keys())}, shapes={ {k: v.shape if hasattr(v, 'shape') else type(v).__name__ for k, v in ds[0].items()} }")
+        """
+
         for batch_idx, batch in enumerate(self.loader):
             if (
                 self.cfg.limits.max_cases is not None
                 and generated_case_count >= self.cfg.limits.max_cases
             ):
                 break
-
+           
+            #print('run: batch_idx=', batch_idx)
             batch = move_batch_to_device(batch, self.device)
             processed_cases = self._generate_for_batch(
                 batch,
@@ -395,6 +417,9 @@ class Generator:
                 else self.cfg.limits.max_cases - generated_case_count,
             )
             generated_case_count += processed_cases
+            #print('run: processed_cases=', processed_cases)
+            #print('run: generated_case_count=', generated_case_count)
+            #print('run: self.cfg.limits.max_cases=', self.cfg.limits.max_cases)
 
         if self.cfg.outputs.save_plots:
             logger.info(
@@ -567,9 +592,13 @@ class Generator:
         remaining_cases: int | None,
     ) -> int:
         batch_size = self._infer_batch_size(batch)
+        #print('_generate_for_batch: batch_size', batch_size)
+        #print('_generate_for_batch: remaining_cases', remaining_cases)
         if remaining_cases is not None:
             batch_size = min(batch_size, remaining_cases)
         dates = self._get_batch_meta_list(batch, "date", batch_size)
+        #print('_generate_for_batch: dates', dates)
+        #print('_generate_for_batch: batch', batch)
 
         generated_members: list[list[torch.Tensor]] = [[] for _ in range(batch_size)]
 
@@ -595,6 +624,7 @@ class Generator:
                     generated[case_idx : case_idx + 1].detach().cpu()
                 )
 
+        #print('_generate_for_batch: batch_idx=', batch_idx)
         for case_idx in range(batch_size):
             case_batch = self._slice_batch(batch, case_idx)
             case_output_dir = build_case_output_dir(
@@ -760,9 +790,11 @@ class Generator:
 
     def _infer_batch_size(self, batch: dict[str, Any]) -> int:
         target = batch.get("target")
+        #print('_infer_batch_size:int(target.shape[0]),', int(target.shape[0]))
         if isinstance(target, torch.Tensor):
             return int(target.shape[0])
         cond_dynamic = batch.get("cond_dynamic")
+        #print('_infer_batch_size:int(cond_dynamic.shape[0]),', int(cond_dynamic.shape[0]))
         if isinstance(cond_dynamic, torch.Tensor):
             return int(cond_dynamic.shape[0])
         raise ValueError("Could not infer batch size from batch tensors")

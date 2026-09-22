@@ -123,6 +123,17 @@ class Evaluator:
         self._print_run_summary()
 
         cases = list(self.loader.iter_cases())
+        print('run:cases', cases)
+        dates = [c.date for c in cases]
+        print(f"n_cases:    {len(cases)}")
+        print(f"date range: {min(dates)} → {max(dates)}")
+        print(f"first 5:    {dates[:5]}")
+
+        for case in cases[:1]:
+            for prod_name, prod in case.products.items():
+                print(f"\nProduct: {prod_name}")
+                for arr_name, arr in prod.arrays.items():
+                    print(f"  {arr_name:30s}  shape={arr.shape}  dtype={arr.dtype}")
 
         if len(cases) == 0:
             raise RuntimeError("No evaluation cases found.")

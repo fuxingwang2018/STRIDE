@@ -1,5 +1,5 @@
 experiment:
-  name: pipeline_norcp
+  name: pipeline_norcp_pr_zscore_ep100
   output_root: ${STRIDE_RUNS}
   seed: 42
 
@@ -14,7 +14,7 @@ bases:
   generation: configs/generation/generation_base.yaml
   sampler: configs/generation/sampler_base.yaml
   evaluation: configs/evaluation/evaluation_base.yaml
-  data: configs/datasets/norcp_alvis.yaml
+  data: configs/datasets/norcp_pr_alvis.yaml
 
 data:
   target:
@@ -53,7 +53,7 @@ training:
   run_name: train_norcp
   overrides:
     loop:
-      max_epochs: 5
+      max_epochs: 100
   
 model:
   overrides:

@@ -1,5 +1,5 @@
 experiment:
-  name: pipeline_norcp
+  name: pipeline_norcp_ckp
   output_root: ${STRIDE_RUNS}
   seed: 42
 
